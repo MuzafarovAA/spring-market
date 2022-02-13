@@ -13,11 +13,24 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
     }
 
     $scope.deleteProductById = function (productId) {
-        $http.delete('http://localhost:8189/market/api/v1/products/' + productId).then(function (){
+        $http.delete('http://localhost:8189/market/api/v1/products/' + productId).then(function () {
             $scope.loadProducts();
         })
     }
 
+    $scope.loadCart = function () {
+        $http.get('http://localhost:8189/market/api/v1/cart').then(function (response) {
+            $scope.productsCartList = response.data;
+        })
+    }
+
+    $scope.addToCart = function (productId) {
+        $http.get('http://localhost:8189/market/api/v1/cart/add/' + productId).then(function () {
+            $scope.loadCart();
+        })
+    }
+
     $scope.loadProducts();
+    $scope.loadCart();
 
 });
