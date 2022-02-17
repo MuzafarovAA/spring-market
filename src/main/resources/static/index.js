@@ -20,14 +20,32 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     $scope.loadCart = function () {
         $http.get('http://localhost:8189/market/api/v1/cart').then(function (response) {
-            $scope.productsCartList = response.data;
-        })
+            $scope.cart = response.data;
+        });
     }
 
     $scope.addToCart = function (productId) {
-        $http.get('http://localhost:8189/market/api/v1/cart/add/' + productId).then(function () {
+        $http.get('http://localhost:8189/market/api/v1/cart/add/' + productId).then(function (response) {
             $scope.loadCart();
-        })
+        });
+    }
+
+    $scope.clearCart = function () {
+        $http.get('http://localhost:8189/market/api/v1/cart/clear').then(function () {
+            $scope.loadCart();
+        });
+    }
+
+    $scope.deleteItemGroup = function (productId) {
+        $http.get('http://localhost:8189/market/api/v1/cart/clear/' + productId).then(function (response) {
+            $scope.loadCart();
+        });
+    }
+
+    $scope.deleteItem = function (productId) {
+        $http.get('http://localhost:8189/market/api/v1/cart/delete/' + productId).then(function (response) {
+            $scope.loadCart();
+        });
     }
 
     $scope.loadProducts();
