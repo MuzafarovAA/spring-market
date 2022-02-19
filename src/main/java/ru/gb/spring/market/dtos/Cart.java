@@ -21,18 +21,17 @@ public class Cart {
     }
 
     public void add(Product product) {
-        int index = items.size();
-        int quantity = 1;
+        int quantityToAdd = 1;
         for (CartItem item : items) {
             if (item.getProductTitle().equals(product.getTitle())) {
-                quantity = item.getQuantity() + 1;
-                index = items.indexOf(item);
-                items.remove(item);
-                break;
+                item.setQuantity(item.getQuantity() + quantityToAdd);
+                item.setPrice(item.getPricePerProduct() * item.getQuantity());
+                recalculate();
+                return;
             }
         }
-        CartItem cartItem = new CartItem(product.getId(), product.getTitle(), quantity, product.getPrice(), (product.getPrice() * quantity));
-        items.add(index, cartItem);
+        CartItem cartItem = new CartItem(product.getId(), product.getTitle(), quantityToAdd, product.getPrice(), (product.getPrice() * quantityToAdd));
+        items.add(cartItem);
         recalculate();
     }
 
@@ -59,17 +58,14 @@ public class Cart {
     }
 
     public void deleteItem(Long productId) {
+        int quantityToDelete = 1;
         for (CartItem item : items) {
             if (item.getProductId().equals(productId)) {
-                int quantity = item.getQuantity();
-                if (quantity == 1) {
+                if (item.getQuantity() <= quantityToDelete) {
                     deleteItemGroup(productId);
                 } else {
-                    quantity--;
-                    int index = items.indexOf(item);
-                    items.remove(item);
-                    CartItem cartItem = new CartItem(item.getProductId(), item.getProductTitle(), quantity, item.getPricePerProduct(), (item.getPricePerProduct() * quantity));
-                    items.add(index, cartItem);
+                    item.setQuantity(item.getQuantity() - quantityToDelete);
+                    item.setPrice(item.getPricePerProduct() * item.getQuantity());
                 }
                 break;
             }
